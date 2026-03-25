@@ -1,24 +1,24 @@
 @CurrencyConverterApi_HostAddress = http://localhost:5260
 
-POST {{CurrencyConverterApi_HostAddress}}/api/currencies/Create currency
+POST {{CurrencyConverterApi_HostAddress}}/api/currencies/Create_currency
 Accept: application/json
 
-PUT {{CurrencyConverterApi_HostAddress}}/api/currencies/Update currency
+PUT {{CurrencyConverterApi_HostAddress}}/api/currencies/Update_currency
 Accept: application/json
 
-GET {{CurrencyConverterApi_HostAddress}}/api/currencies/Get currency by code
+GET {{CurrencyConverterApi_HostAddress}}/api/currencies/Get_currency_by_code
 Accept: application/json
 
-GET {{CurrencyConverterApi_HostAddress}}/api/currencies/Delete currency
+GET {{CurrencyConverterApi_HostAddress}}/api/currencies/Delete_currency
 Accept: application/json
 
-DELETE {{CurrencyConverterApi_HostAddress}}/api/currencies/Get all currencies
+DELETE {{CurrencyConverterApi_HostAddress}}/api/currencies/Get_all_currencies
 Accept: application/json
 
-<<<<<<< HEAD
 POST {{CurrencyConverterApi_HostAddress}}/api/Conversion
 Accept: application/json
 
-=======
->>>>>>> 7171e30d519d0e7aac53b75d111be0cdb73de1b3
+GET {{CurrencyConverterApi_HostAddress}}/api/conversion_history
+Accept: application/json
+
 ###
