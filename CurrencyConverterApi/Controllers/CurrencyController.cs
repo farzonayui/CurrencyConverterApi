@@ -18,6 +18,7 @@ namespace CurrencyConverterApi.Controllers
             if (!Enum.TryParse<CurrencyCode>(code, true, out var currency)) {
                 return BadRequest("Неверная валюта. Допустимо: USD, EUR, RUB, TJS");
             }
+            
 
             var existing = _context.Currency.FirstOrDefault(c => c.CurrencyCode == currency);
             if (existing != null) return BadRequest("Курс уже существует");

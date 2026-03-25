@@ -15,7 +15,10 @@ Accept: application/json
 DELETE {{CurrencyConverterApi_HostAddress}}/api/currencies/Get all currencies
 Accept: application/json
 
+<<<<<<< HEAD
 POST {{CurrencyConverterApi_HostAddress}}/api/Conversion
 Accept: application/json
 
+=======
+>>>>>>> 7171e30d519d0e7aac53b75d111be0cdb73de1b3
 ###
