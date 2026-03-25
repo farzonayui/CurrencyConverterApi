@@ -2,10 +2,9 @@
 {
     public enum CurrencyCode
     {
-       USD,
-       EUR,
-       TJS,
-       RUB
-
+        USD,
+        EUR,
+        RUB,
+        TJS
     }
 }

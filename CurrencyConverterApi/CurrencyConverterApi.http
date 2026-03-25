@@ -21,4 +21,13 @@ Accept: application/json
 GET {{CurrencyConverterApi_HostAddress}}/api/conversion_history
 Accept: application/json
 
+GET {{CurrencyConverterApi_HostAddress}}/api/analytics/most_popular
+Accept: application/json
+
+GET {{CurrencyConverterApi_HostAddress}}/api/analytics/weekly_stats
+Accept: application/json
+
+GET {{CurrencyConverterApi_HostAddress}}/api/analytics/rates_month
+Accept: application/json
+
 ###
