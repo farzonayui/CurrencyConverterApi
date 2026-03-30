@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CurrencyConverterApi.Data;
 
-
 namespace CurrencyConverterApi.Controllers
 {
     [ApiController]
@@ -16,10 +15,10 @@ namespace CurrencyConverterApi.Controllers
         }
 
         [HttpGet("most-popular")]
-        public IActionResult GetMostPopularCurrensy()
+        public IActionResult MostPopular()
         {
             var result = _context.ConvertionHistories
-                .GroupBy(x => x.ToCurrency)
+                .GroupBy(x => x.FromCurrency)
                 .Select(g => new
                 {
                     Currency = g.Key,
@@ -27,51 +26,25 @@ namespace CurrencyConverterApi.Controllers
                 })
                 .OrderByDescending(x => x.Count)
                 .FirstOrDefault();
-            return Ok(result);
 
+            return Ok(result);
         }
+
         [HttpGet("weekly-stats")]
-        public IActionResult GetWeeklyStats()
+        public IActionResult Weekly()
         {
             var weekAgo = DateTime.UtcNow.AddDays(-7);
 
-            var weeklyOperations = _context.ConvertionHistories
+            var data = _context.ConvertionHistories
                 .Where(x => x.ConvertedAt >= weekAgo)
-                .ToList();
-
-            var totalOperations = weeklyOperations.Count;
-
-            var topCurrencies = weeklyOperations
-                .GroupBy(x => x.ToCurrency)
-                .Select(g => new { Currency = g.Key, Count = g.Count() })
-                .OrderByDescending(x => x.Count)
                 .ToList();
 
             return Ok(new
             {
-                Period = "Last 7 days",
-                TotalOperations = totalOperations,
-                TopCurrencies = topCurrencies
+                TotalOperations = data.Count,
+                TopFromCurrency = data.GroupBy(x => x.FromCurrency)
+                    .Select(g => new { Currency = g.Key, Count = g.Count() })
             });
-        }
-
-        [HttpGet("rates-month")]
-        public IActionResult GetRatesForMonth()
-        {
-            var monthAgo = DateTime.UtcNow.AddDays(-30);
-
-            var rates = _context.Currency
-                .Where(c => c.UpdatedAt >= monthAgo)
-                .Select(c => new
-                {
-                    c.CurrencyCode,
-                    c.RateToTj,
-                    c.UpdatedAt
-                })
-                .OrderBy(c => c.UpdatedAt)
-                .ToList();
-
-            return Ok(rates);
         }
     }
 }

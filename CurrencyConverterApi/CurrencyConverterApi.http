@@ -1,33 +1,31 @@
 @CurrencyConverterApi_HostAddress = http://localhost:5260
 
-POST {{CurrencyConverterApi_HostAddress}}/api/currencies/Create_currency
+POST {{CurrencyConverterApi_HostAddress}}/api/currencies/create
+Content-Type: application/json
+
+PUT {{CurrencyConverterApi_HostAddress}}/api/currencies/update
 Accept: application/json
 
-PUT {{CurrencyConverterApi_HostAddress}}/api/currencies/Update_currency
+GET {{CurrencyConverterApi_HostAddress}}/api/currencies/get-currency-by-code
 Accept: application/json
 
-GET {{CurrencyConverterApi_HostAddress}}/api/currencies/Get_currency_by_code
+GET {{CurrencyConverterApi_HostAddress}}/api/currencies/all-currencies
 Accept: application/json
 
-GET {{CurrencyConverterApi_HostAddress}}/api/currencies/Delete_currency
+DELETE {{CurrencyConverterApi_HostAddress}}/api/currencies/delete
 Accept: application/json
 
-DELETE {{CurrencyConverterApi_HostAddress}}/api/currencies/Get_all_currencies
+POST {{CurrencyConverterApi_HostAddress}}/api/conversions
+Content-Type: application/json
+
+GET {{CurrencyConverterApi_HostAddress}}/api/conversion-history
 Accept: application/json
 
-POST {{CurrencyConverterApi_HostAddress}}/api/Conversion
+GET {{CurrencyConverterApi_HostAddress}}/api/analytics/most-popular
 Accept: application/json
 
-GET {{CurrencyConverterApi_HostAddress}}/api/conversion_history
+GET {{CurrencyConverterApi_HostAddress}}/api/analytics/weekly-stats
 Accept: application/json
 
-GET {{CurrencyConverterApi_HostAddress}}/api/analytics/most_popular
+GET {{CurrencyConverterApi_HostAddress}}/api/analytics/rates-month
 Accept: application/json
-
-GET {{CurrencyConverterApi_HostAddress}}/api/analytics/weekly_stats
-Accept: application/json
-
-GET {{CurrencyConverterApi_HostAddress}}/api/analytics/rates_month
-Accept: application/json
-
-###

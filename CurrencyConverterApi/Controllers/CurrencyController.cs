@@ -1,84 +1,88 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CurrencyConverterApi.Data;
 using CurrencyConverterApi.Models;
-using System.Linq;
 
 namespace CurrencyConverterApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/currency")]
     public class CurrencyController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public CurrencyController(AppDbContext context) => _context = context;
+
+        public CurrencyController(AppDbContext context)
+        {
+            _context = context;
+        }
 
         [HttpPost("create")]
-        public IActionResult AddRate(string code, decimal rate)
+        public IActionResult AddRate([FromBody] Currency model)
         {
-            if (!Enum.TryParse<CurrencyCode>(code, true, out var currency)) {
-                return BadRequest("Неверная валюта. Допустимо: USD, EUR, RUB, TJS");
-            }
-            
+            if (model.CurrencyCode == CurrencyCode.TJS && model.RateToTj != 1)
+                model.RateToTj = 1;
 
-            var existing = _context.Currency.FirstOrDefault(c => c.CurrencyCode == currency);
-            if (existing != null) return BadRequest("Курс уже существует");
+            var existing = _context.Currency
+                .FirstOrDefault(c => c.CurrencyCode == model.CurrencyCode);
 
-            var newRate = new Currency
-            {
-                CurrencyCode = currency,
-                RateToTj = rate,
-                UpdatedAt = DateTime.UtcNow
-            };
+            if (existing != null)
+                return BadRequest("Курс уже существует");
 
-            _context.Currency.Add(newRate);
+            model.UpdatedAt = DateTime.UtcNow;
+
+            _context.Currency.Add(model);
             _context.SaveChanges();
 
-            return Ok(newRate);
+            return Ok(model);
         }
-        [HttpPut("Update currency")]
+
+        [HttpPut("update")]
         public IActionResult UpdateRate(CurrencyCode code, decimal rate)
         {
-            var existing = _context.Currency.FirstOrDefault(c => c.CurrencyCode == code);
-            
-            if (existing == null)
-            {
-                return NotFound();
-            }
+            var currency = _context.Currency.FirstOrDefault(c => c.CurrencyCode == code);
 
-            existing.RateToTj = rate;
-            existing.UpdatedAt = DateTime.UtcNow;
+            if (currency == null)
+                return NotFound();
+
+            if (code == CurrencyCode.TJS)
+                rate = 1;
+
+            currency.RateToTj = rate;
+            currency.UpdatedAt = DateTime.UtcNow;
 
             _context.SaveChanges();
-            return Ok(existing);
+
+            return Ok(currency);
         }
 
-        [HttpGet("Get currency by code")]
+        [HttpGet("get currency by code")]
         public IActionResult GetRate(CurrencyCode code)
         {
-            var rate = _context.Currency.FirstOrDefault(c => c.CurrencyCode == code);
-            
-            if (rate == null)
-            {
+            var currency = _context.Currency.FirstOrDefault(c => c.CurrencyCode == code);
+
+            if (currency == null)
                 return NotFound();
-            }
-            
-            return Ok(rate);
+
+            return Ok(currency);
         }
 
-        [HttpGet("Get all currencies")]
-        public IActionResult GetAllRates() => Ok(_context.Currency.ToList());
-
-        [HttpDelete("Delete currency")]
-        public IActionResult DeleteRate(CurrencyCode code)
+        [HttpGet("get all")]
+        public IActionResult GetAll()
         {
-            var existing = _context.Currency.FirstOrDefault(c => c.CurrencyCode == code);
-            
-            if (existing == null)
-            {
-                return NotFound();
-            }
+            return Ok(_context.Currency.ToList());
+        }
 
-            _context.Currency.Remove(existing);
+        [HttpDelete("delete")]
+        public IActionResult Delete(CurrencyCode code)
+        {
+            if (code == CurrencyCode.TJS)
+                return BadRequest("TJS нельзя удалить");
+
+            var currency = _context.Currency.FirstOrDefault(c => c.CurrencyCode == code);
+
+            if (currency == null)
+                return NotFound();
+
+            _context.Currency.Remove(currency);
             _context.SaveChanges();
 
             return Ok();

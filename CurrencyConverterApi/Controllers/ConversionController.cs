@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CurrencyConverterApi.Data;
 using CurrencyConverterApi.Models;
+using CurrencyConverterApi.Services;
 
 namespace CurrencyConverterApi.Controllers
 {
@@ -9,40 +10,23 @@ namespace CurrencyConverterApi.Controllers
     public class ConversionController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly ConversionService _service;
 
         public ConversionController(AppDbContext context)
         {
             _context = context;
+            _service = new ConversionService(context);
         }
 
         [HttpPost]
         public IActionResult Convert([FromBody] ConvertRequest req)
         {
-            if (!Enum.TryParse<CurrencyCode>(req.From, true, out var from) ||
-                !Enum.TryParse<CurrencyCode>(req.To, true, out var to))
-                return BadRequest("Допустимые валюты: USD, EUR, RUB, TJS");
-
-            var fromRate = _context.Currency.FirstOrDefault(c => c.CurrencyCode == from);
-            var toRate = _context.Currency.FirstOrDefault(c => c.CurrencyCode == to);
-
-            if (fromRate == null || toRate == null)
-                return NotFound("Курс не найден");
-
-            decimal result;
-
-            if (from == CurrencyCode.TJS)
-            {
-                result = req.Amount / toRate.RateToTj;
-            }
-            else
-            {
-                result = req.Amount * fromRate.RateToTj;
-            }
+            var result = _service.Convert(req.Amount, req.From, req.To);
 
             _context.ConvertionHistories.Add(new ConvertionHistory
             {
-                FromCurrency = req.From.ToUpper(),
-                ToCurrency = req.To.ToUpper(),
+                FromCurrency = req.From.ToString(),
+                ToCurrency = req.To.ToString(),
                 Amount = req.Amount,
                 Result = result,
                 ConvertedAt = DateTime.UtcNow
@@ -52,9 +36,9 @@ namespace CurrencyConverterApi.Controllers
 
             return Ok(new
             {
-                from = req.From,
-                to = req.To,
-                amount = req.Amount,
+                req.From,
+                req.To,
+                req.Amount,
                 result = Math.Round(result, 2)
             });
         }
